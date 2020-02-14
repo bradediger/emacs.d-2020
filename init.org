@@ -60,9 +60,9 @@ https://github.com/raxod502/straight.el#integration-with-use-package
 (setq kill-whole-line t)
 (defalias 'yes-or-no-p 'y-or-n-p)
 (use-package better-defaults)
-
 (add-to-list 'exec-path (substitute-env-vars "$HOME/.cargo/bin"))
 (add-to-list 'exec-path (substitute-env-vars "$HOME/.cargo/bin"))
+(add-to-list 'exec-path (substitute-env-vars "$HOME/src/elixir-ls/build"))
 #+end_src
 
 ** Theme and Fonts
@@ -272,6 +272,9 @@ files.
 #+begin_src emacs-lisp :tangle yes
 (use-package elixir-mode
   :config
+  (add-hook 'elixir-mode-hook 'lsp)
+  (setq-default lsp-ui-doc-enable nil)
+  (setq-default lsp-ui-sideline-enable t)
   (add-hook 'elixir-mode-hook
     (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
   (add-hook 'elixir-format-hook 
@@ -308,6 +311,22 @@ files.
          (web-mode-on-engine-setted))
       (apply f r))))
 
+(use-package dap-mode
+  :config
+  (add-hook 'elixir-mode-hook (lambda () (dap-ui-mode) (dap-mode))))
+
+(use-package exunit
+  :after (elixir-mode)
+  :bind (:map elixir-mode-map
+         ("C-c v a" . exunit-verify-all)
+         ("C-c v v" . exunit-verify)
+         ("C-c v r" . exunit-rerun)
+         ("C-c v 1" . exunit-verify-single)))
+#+end_src
+
+** Elm
+#+begin_src emacs-lisp :tangle yes
+(use-package elm-mode)
 #+end_src
 
 ** Erlang
@@ -593,6 +612,11 @@ Helm-projectile (find file in project via scm):
   ;; Return to the same place in the previous buffer when done
   (setq multi-term-dedicated-close-back-to-open-buffer-p t))
 #+end_src
+*** TODO a hotkey to open a dedicated multi-term in the git/projectile root of the current 
+** multiple-cursors
+#+begin_src emacs-lisp :tangle yes
+(use-package multiple-cursors)
+#+end_src
 
 ** org-mode
 #+begin_src emacs-lisp :tangle yes
@@ -600,7 +624,7 @@ Helm-projectile (find file in project via scm):
   :config
   ;; Syntax highlighting in org-babel blocks
   (setq org-src-fontify-natively t)
-  (setq org-agenda-files '("~/Dropbox/org/TODO.org" "~/Dropbox/org/TODO.org_archive"))
+  (setq org-agenda-files '("~/Dropbox/org/"))
   (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
   (setq org-refile-use-outline-path nil)
   (setq org-outline-path-complete-in-steps nil)
@@ -623,7 +647,8 @@ Helm-projectile (find file in project via scm):
        "* EVENT %?\n%U" :empty-lines 1)
       ("E" "Event With Clipboard" entry (file+headline "~/Dropbox/org/Events.org" "Transient")
        "* EVENT %?\n%U\n   %c" :empty-lines 1)))
-  (setq org-default-notes-file "~/Dropbox/org/TODO.org"))
+  (setq org-default-notes-file "~/Dropbox/org/TODO.org")
+  (add-hook 'org-mode-hook #'auto-revert-mode))
 (use-package org-bullets
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
