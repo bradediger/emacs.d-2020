@@ -1,13 +1,22 @@
 #+TITLE: Emacs configuration
 
-This is a literate, mostly self-describing Emacs configuration. The
-[[Colophon]] explains how this file transforms itself into
-~.emacs.d/init.el~.
+This is my literate, mostly self-describing Emacs configuration. The
+[[#hooks][footer of this file]] adds an org-mode hook that extracts emacs lisp
+blocks from this file into ~init.el~. Almost everything needed to
+bootstrap my config is in this file. 
 
-It's mostly self-describing: we defer package management to
-[[https://github.com/raxod502/straight.el][straight.el]], while composition and configuration of said packages
-belongs here.
+** Installation
 
+1. Clone this repo to ~.emacs.d~.
+2. Create an empty ~.emacs.d/custom.el~ if one does not exist. This
+   file keeps any machine-local customizations and is not
+   version-controlled.
+3. Open this file (~init.org~) in emacs. When prompted, trust the file
+   in order to allow the ~org-babel-tangle~ hook to be installed. Save
+   the file, making a trivial change if necessary, to trigger the
+   after-save tangle hook. This creates the ~init.el~.
+4. Restart emacs, several times if necessary, to install all of the packages.
+5. When emacs starts cleanly, you win! Have a treat.
 
 * Initialization and Package Management
 ** Bootstrap straight.el, the functional package manager:
@@ -689,7 +698,7 @@ Helm-projectile (find file in project via scm):
 #+end_src
 
 * Meta
-** Colophon 
+** Hooks
 Builds an ~init.el~ file every time this file is saved.
 
 ;; Local Variables:
