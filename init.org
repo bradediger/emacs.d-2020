@@ -285,19 +285,7 @@ files.
   (setq-default lsp-ui-doc-enable nil)
   (setq-default lsp-ui-sideline-enable t)
   (add-hook 'elixir-mode-hook
-    (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
-  (add-hook 'elixir-format-hook 
-    (lambda ()
-      (if (projectile-project-p)
-        (if-let ((found (locate-dominating-file buffer-file-name ".formatter.exs")))
-          (setq elixir-format-arguments
-            (list "--dot-formatter"
-              (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
-          (setq elixir-format-arguments nil))
-        (setq elixir-format-arguments nil))))
-  (eval-after-load "elixir-mode"
-    '(defun elixir-format--mix-executable ()
-       (string-trim-right (shell-command-to-string "asdf which mix")))))
+    (lambda () (add-hook 'before-save-hook 'elixir-format nil t))))
 
 ;; https://elixirforum.com/t/tips-syntax-highlight-for-inline-l-liveview-code-in-emacs/26445
 (use-package mmm-mode
